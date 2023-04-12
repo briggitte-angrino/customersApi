@@ -1,0 +1,146 @@
+{
+	"info": {
+		"_postman_id": "57181917-6ac1-4afe-a78f-1dc4bb8885da",
+		"name": "CLIENTES",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Solicitud de listado de clientes",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"email\": \"sdfds@gmail.com\",\r\n  \"fecha\": \"2023-04-03\",\r\n  \"apellido\": \"string\",\r\n  \"nombre\": \"string\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:44321/api/customers",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "44321",
+					"path": [
+						"api",
+						"customers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Solicitud de listado de clientes Copy",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var jwtSecret ='3d9ad376a1726882d8b57a303b05a127ec46b07a794bdab78ecb4b1c0f3bbd475cf55818ccde3c6680dcd527c8a3dfcc4845fc46516665ff530c617b347500a0'\r",
+							"console.log(jwtSecret);\r",
+							"var uuid = require('uuid');\r",
+							"var myUUID = uuid.v4();\r",
+							"// Set headers for JWT\r",
+							"var header = {\r",
+							"\t'typ': 'JWT',\r",
+							"\t'alg': 'HS256'\r",
+							"};\r",
+							"\r",
+							"// Prepare timestamp in seconds\r",
+							"var currentTimestamp = Math.floor(Date.now() / 1000)\r",
+							"\r",
+							"var data = {\r",
+							"\t'nonce': myUUID || '',\r",
+							"\t'epoch': currentTimestamp\r",
+							"}\r",
+							"\r",
+							"function base64url(source) {\r",
+							"    // Encode in classical base64\r",
+							"    encodedSource = CryptoJS.enc.Base64.stringify(source)\r",
+							"    \r",
+							"    // Remove padding equal characters\r",
+							"    encodedSource = encodedSource.replace(/=+$/, '')\r",
+							"    \r",
+							"    // Replace characters according to base64url specifications\r",
+							"    encodedSource = encodedSource.replace(/\\+/g, '-')\r",
+							"    encodedSource = encodedSource.replace(/\\//g, '_')\r",
+							"    \r",
+							"    return encodedSource\r",
+							"}\r",
+							"\r",
+							"// encode header\r",
+							"var stringifiedHeader = CryptoJS.enc.Utf8.parse(JSON.stringify(header))\r",
+							"var encodedHeader = base64url(stringifiedHeader)\r",
+							"\r",
+							"// encode data\r",
+							"var stringifiedData = CryptoJS.enc.Utf8.parse(JSON.stringify(data))\r",
+							"var encodedData = base64url(stringifiedData)\r",
+							"\r",
+							"// build token\r",
+							"var token = `${encodedHeader}.${encodedData}`\r",
+							"\r",
+							"// sign token\r",
+							"var signature = CryptoJS.HmacSHA256(token, jwtSecret)\r",
+							"signature = base64url(signature)\r",
+							"var signedToken = `${token}.${signature}`\r",
+							"\r",
+							"pm.environment.set('jwt_signed', signedToken)\r",
+							"console.log('Signed and encoded JWT', signedToken)"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-PRO-Auth-App",
+						"type": "text",
+						"value": "88761ac3-d5ec-4b45-9b86-c2a2c35cb253"
+					},
+					{
+						"key": "X-PRO-Auth-Payload",
+						"type": "text",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub25jZSI6IjY2NDcwOWFkLWRiMDItNDdmNS05YmQwLTE2MjI1YWFjN2Q0OCIsImVwb2NoIjoiMTYxOTU1NzIwNiIsInRva2VuIjoiWDRydkpOZFczREdFQm5DOFRMNHZqU1g0R0lIZldrMytPV01QK1NrODVZV3R6TThjd3NiSjZTZ1NONSs5L1Q5ZFdOaXF0cUJSaGN0T3g0WUxua1pzNTh2RG9zbFdaS2JMNDRVK2w1cjJ1WWxSK0NsNGExSVNMREpUcTZBMkMwY0hYa0phNFNSVTg4bnpXOVhKeWlhMTZmTG5XUzNPdmZ3cElya3E2MGVZbFQ1c0FBNXA3MlhuYnNwcFdWSytRekd1MXBBOC93SnVXanIycHpqTGIwelFxWkNUMXM3aUZwbmRaSWRmdjF3VzZoU1ZTMThKaVNsYVhtVGhqM0NKQXhTWU1MRnozL3EzeGRjUG1PbWd6b2xkQWVMaVdCRW81UHBFTUl3M0NRK2FjNzZJUEdWOVRnWml4bk5ReGVlTFFvb1NDc0lKeTB0MHR5bWxSd2Vxb3VyZ2JnPT0ifQ.xNnIfMu1AeFWjmXlm8bwiOcNXLlPM7SzlmazOymSReM"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:8000/api/customers",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"customers"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
